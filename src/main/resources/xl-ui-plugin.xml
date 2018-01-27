@@ -13,7 +13,7 @@
         xsi:schemaLocation="http://www.xebialabs.com/deployit/ui-plugin xl-ui-plugin.xsd">
 
     <menu-ref ref="xlrelease.menu.Main">
-        <menu-item label="CSV" weight="60" uri="include/xlr-csv-importer/index.html">
-        </menu-item>
+        <menu-item label="CSV" weight="60" uri="include/xlr-csv-importer/index.html" />
     </menu-ref>
+    
 </plugin>

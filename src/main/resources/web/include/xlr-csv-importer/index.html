@@ -8,15 +8,19 @@
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 
-<form id="csv_form" action="/api/extension/csv/importer" onsubmit="return false;" >
-	<fieldset>
-		<legend for="template_name">Template name to import to</legend>
+<form id="csv_form" onsubmit="return false;">
+	<title></title>
+	<fieldset> 
+		<legend>Upload a template from CSV</legend>
+		<label for="template_name">Template name to import to</label>
 		<input id="template_name" name="template_name" type="text"/> <br/>
 		
-		<legend for="csv">Copy paste Excel sheet into this field</legend>
+		<label for="csv">Copy paste Excel sheet into this field</label>
 		<textarea id="csv" name="csv" type="text" style="width: 1024px; height: 150px;" /> <br/>
 		
 		<input type="submit"/> <br/>
+
+		<p id="csv_feedback"></p>
 	</fieldset>
 <form>
 
@@ -26,13 +30,16 @@ $( "#csv_form" ).submit(function( event ) {
 	postData = JSON.stringify(formArray)
 
 	$.ajax({
-		url:"/api/extension/csv/importer",
-		type:"POST",
-		data:postData,
-		contentType:"application/json; charset=utf-8",
-		dataType:"json",
+		url: "/api/extension/csv/importer",
+		type: "POST",
+		data: postData,
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
 		success: function(){
-			alert("Imported successfully!")
+			$("#csv_feedback").html("Imported template successfully!")
+		},
+		error: function(jqXHR, textStatus){
+			$("#csv_feedback").html("Error: " + textStatus)
 		}
 	})
 

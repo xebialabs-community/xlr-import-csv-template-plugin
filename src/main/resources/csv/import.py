@@ -9,104 +9,83 @@
 #
 
 import base64, csv, getpass, json, os.path, sys, urllib2
+from java.util import Date
 from sets import Set
 
-#print "CSV File:",
-#csv_file = 'sample.csv'
-#if not os.path.isfile(csv_file):
-#    print "Specified CSV file %s does not exist." % csv_file
-#    sys.exit(1)
-#print "New Template Name:",
-#template_name = raw_input()
+from com.xebialabs.xlrelease.domain import Release
+from com.xebialabs.xlrelease.domain.status import ReleaseStatus
+from com.xebialabs.xlrelease.api.v1.views import TeamView
 
-from StringIO import StringIO
+def create_team(teamName, id=None):
+    teamView = TeamView()
+    teamView.id = id
+    teamView.teamName = teamName
+    return teamView
+
+def add_teams_to_template(template, teamNames):
+    teams = []
+    teams.append(create_team(template['teams'][0]['teamName'], template['teams'][0].id))
+    teams.append(create_team(template['teams'][1]['teamName'], template['teams'][1].id))
+
+    for teamName in teamNames:
+        teams.append(create_team(teamName))
+
+    templateApi.setTeams(template.id, teams)
 
 for item in request.entity:
     if item['name'] == 'csv':
         csv_str = str(item['value'])
     if item['name'] == 'template_name':
         template_name = item['value']
-    if item['Authorization']:
-        auth_string = item['value']
 
-jythonRequest = request
-jythonResponse = response
+try: 
+    template = Release()
+    template.title = template_name
+    template.status = ReleaseStatus.TEMPLATE
+    template.scheduledStartDate = Date()
+    template.dueDate = Date(template.scheduledStartDate.getTime() + 3600000)
+    template = templateApi.createTemplate(template)
 
-# Defaults
-xlr_url = "http://localhost:5516"
-xlr_user = "admin"
-xlr_pass = "admin"
+    # Delete unnecessary "New Phase"
+    phaseApi.deletePhase(template['phases'][0].id)
 
-opener = urllib2.build_opener(urllib2.HTTPHandler)
+    phases = []
+    phase_name_id_map = {}
+    template_reader = csv.reader(csv_str.split('\n'), delimiter='\t', dialect='excel', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    for row in template_reader:
+        if not row[0] in phases:
+            phase_name = row[0]
+            phases.append(phase_name)
+            phase = phaseApi.addPhase(template.id, phaseApi.newPhase(phase_name))
+            phase_name_id_map[phase_name] = phase.id
 
-data = '''{
-  "id" : "Applications/Release1",
-  "type" : "xlrelease.Release",
-  "title" : "%s",
-  "scheduledStartDate" : "2017-10-21T21:05:07.014+02:00",
-  "status" : "TEMPLATE"
-}''' % template_name
+    # Create Tasks
+    teamNames = Set([])
+    template_reader = csv.reader(csv_str.split('\n'), delimiter='\t', dialect='excel', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    for row in template_reader:
+        phase_id = phase_name_id_map[row[0]]
+        title = row[1]
+        description = row[5]
+        team = row[6]
 
-headers = {"Content-Type" : "application/json" , "Authorization" : auth_string}
+        task = taskApi.newTask()
+        task.description = description
+        task.title = title
 
-request = urllib2.Request('%s/api/v1/templates' % xlr_url, data, headers)
-response = opener.open(request)
+        if team:
+            task.team = team
+            teamNames.add(team)
 
-template = json.load(response)
+        phaseApi.addTask(phase_id, task, None)
 
-if response.getcode() != 200:
-    raise Exception("Failed to create new template: %s" % template_name)
+    add_teams_to_template(template, teamNames)
 
-# Delete unnecessary "New Phase"
-request = urllib2.Request('%s/api/v1/phases/%s' % (xlr_url, template['phases'][0]['id']), data, headers)
-request.get_method = lambda: 'DELETE'
-response = opener.open(request)
+    response.statusCode = 200
+    response.entity = json.dumps({"result": "Successfully imported template [%s]" % template_name})
 
-phases = []
-template_reader = csv.reader(csv_str.split('\n'), delimiter='\t', dialect='excel', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-for row in template_reader:
-    if not row[0] in phases:
-        phases.append(row[0])
+except (RuntimeError, TypeError, NameError) as e:
+    print("Unexpected error:", str(e))
 
-print phases
+    response.statusCode = 500
+    response.entity = json.dumps({"result": "Error importing template [%s]" % str(e)})
 
-phase_name_id_map = {}
-for phase_name in phases:
-    data = {'id' : '', 'type' : 'xlrelease.Phase', 'title' : phase_name, 'release' : template['id'], 'status' : 'PLANNED'}
-    request = urllib2.Request('%s/api/v1/phases/%s/phase' % (xlr_url, template['id']), json.dumps(data), headers)
-    response = opener.open(request)
-    phase = json.load(response)
-    phase_name_id_map[phase_name] = phase['id']
-    if response.getcode() != 200:
-        raise Exception("Failed to create new phase: %s in template: %s" % (phase_name, template_name))
-
-# Hardcoded, can be parsed from CSV.
-teamNames = Set([])
-
-# Create Tasks
-template_reader = csv.reader(csv_str.split('\n'), delimiter='\t', dialect='excel', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-for row in template_reader:
-    phase_id = phase_name_id_map[row[0]]
-    data = {'id' : '', 'type' : 'xlrelease.Task', 'title' : row[1], 'description' : row[5]}
-    if row[6]:
-        data['team'] = row[6]
-        teamNames.add(row[6])
-    print phase_id
-    request = urllib2.Request('%s/api/v1/tasks/%s/tasks' % (xlr_url, phase_id), json.dumps(data), headers)
-    response = opener.open(request)
-    task = json.load(response)
-    if response.getcode() != 200:
-        raise Exception("Failed to create new task %s." % row[1])
-
-teams = [
-    { "teamName" : template['teams'][0]['teamName'], "id" : template['teams'][0]['id'] },
-    { "teamName" : template['teams'][1]['teamName'], "id" : template['teams'][1]['id'] }
-]
-for teamName in teamNames:
-    teams.append({'teamName': teamName})
-
-request = urllib2.Request('%s/api/v1/releases/%s/teams' % (xlr_url, template['id']), json.dumps(teams), headers)
-response = opener.open(request)
-
-jythonResponse.statusCode = 200
-jythonResponse.entity = json.dumps({"result": "Successfully imported template [%s]" % template_name})
