@@ -8,7 +8,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-import base64, csv, getpass, json, os.path, sys, urllib2
+import csv, json
 from java.util import Date
 from sets import Set
 
@@ -102,6 +102,11 @@ def create_blank_template(template_name):
 
     return template
 
+
+
+
+
+
 for item in request.entity:
     if item['name'] == 'csv':
         csv_str = str(item['value'])
@@ -115,10 +120,13 @@ try:
     add_teams_to_template(template, tasks)
 
     response.statusCode = 200
-    response.entity = json.dumps({"result": "Successfully imported template [%s]" % template_name})
+    response.entity = {
+        "id": template.id,
+        "message": "Successfully imported template [%s]" % template_name
+    }
 
 except (RuntimeError, TypeError, NameError) as e:
-    print("Unexpected error:", str(e))
+    logger.error("Unexpected error:", str(e))
 
     response.statusCode = 500
     response.entity = json.dumps({"result": "Error importing template [%s]" % str(e)})

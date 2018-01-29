@@ -35,11 +35,13 @@ $( "#csv_form" ).submit(function( event ) {
 		data: postData,
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",
-		success: function(){
-			$("#csv_feedback").html("Imported template successfully!")
+		success: function(data, textStatus, jqXHR){
+			result = data['entity']
+			url = "/#/templates/" + result['id'].replace("Applications/", "")
+			$("#csv_feedback").html(result['message'] + "<br/><a href=\"" + url + "\">go to template</a>")
 		},
 		error: function(jqXHR, textStatus){
-			$("#csv_feedback").html("Error: " + textStatus)
+			$("#csv_feedback").html("Error: " + str(jqXHR.responseText))
 		}
 	})
 
