@@ -16,7 +16,15 @@ from com.xebialabs.xlrelease.domain import Release
 from com.xebialabs.xlrelease.domain.status import ReleaseStatus
 from com.xebialabs.xlrelease.api.v1.views import TeamView
 
+field_to_column_index_mapping = {
+    'phase_name': 0,
+    'title': 1,
+    'description': 5,
+    'team': 6
+}
+
 phase_name_id_map = {}
+
 
 def create_team(teamName, id=None):
     teamView = TeamView()
@@ -45,20 +53,25 @@ def add_phase_if_not_exists_and_return_id(template, phase_name):
     return phase_name_id_map[phase_name]
 
 def parse_csv(csv_str):
-    tasks = []
+    parsed_tasks = []
     template_reader = csv.reader(csv_str.split('\n'), delimiter='\t', dialect='excel', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
     for row in template_reader:
+        if len(row) < max(field_to_column_index_mapping.values()):
+            logger.warn('Skipping row [%s] due to too little columns' % row)
+            continue
+
         task = {}
-        task['phase_name'] = row[0]
-        task['title'] = row[1]
-        task['description'] = row[5]
-        task['team'] = row[6]
+        task['phase_name'] = row[field_to_column_index_mapping['phase_name']]
+        task['title'] = row[field_to_column_index_mapping['title']]
+        task['description'] = row[field_to_column_index_mapping['description']]
+        task['team'] = row[field_to_column_index_mapping['team']]
         
-        tasks.append(task)
+        parsed_tasks.append(task)
 
-    return tasks
+    return parsed_tasks
 
-def create_tasks(template, tasks):    
+def add_tasks_to_template(template, tasks):
     for task in tasks:
         phase_name = task['phase_name']
         title = task['title']
@@ -76,13 +89,7 @@ def create_tasks(template, tasks):
 
         phaseApi.addTask(phase_id, task, None)
 
-for item in request.entity:
-    if item['name'] == 'csv':
-        csv_str = str(item['value'])
-    if item['name'] == 'template_name':
-        template_name = item['value']
-
-try: 
+def create_blank_template(template_name):
     template = Release()
     template.title = template_name
     template.status = ReleaseStatus.TEMPLATE
@@ -93,9 +100,18 @@ try:
     # Delete unnecessary "New Phase"
     phaseApi.deletePhase(template['phases'][0].id)
 
-    # Create Tasks
+    return template
+
+for item in request.entity:
+    if item['name'] == 'csv':
+        csv_str = str(item['value'])
+    if item['name'] == 'template_name':
+        template_name = item['value']
+
+try: 
+    template = create_blank_template(template_name)
     tasks = parse_csv(csv_str)
-    create_tasks(template, tasks)
+    add_tasks_to_template(template, tasks)
     add_teams_to_template(template, tasks)
 
     response.statusCode = 200
