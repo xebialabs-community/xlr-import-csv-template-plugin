@@ -40,8 +40,8 @@ $( "#csv_form" ).submit(function( event ) {
 			url = "/#/templates/" + result['id'].replace("Applications/", "")
 			$("#csv_feedback").html(result['message'] + "<br/><a href=\"" + url + "\">go to template</a>")
 		},
-		error: function(jqXHR, textStatus){
-			$("#csv_feedback").html("Error: " + str(jqXHR.responseText))
+		error: function(jqXHR, textStatus, errorThrown){
+			$("#csv_feedback").html("Error: " + jqXHR.responseText)
 		}
 	})
 

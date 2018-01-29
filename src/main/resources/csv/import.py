@@ -8,7 +8,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-import csv, json
+import csv, json, sys
 from java.util import Date
 from sets import Set
 
@@ -24,7 +24,6 @@ field_to_column_index_mapping = {
 }
 
 phase_name_id_map = {}
-
 
 def create_team(teamName, id=None):
     teamView = TeamView()
@@ -105,8 +104,6 @@ def create_blank_template(template_name):
 
 
 
-
-
 for item in request.entity:
     if item['name'] == 'csv':
         csv_str = str(item['value'])
@@ -127,7 +124,15 @@ try:
 
 except (RuntimeError, TypeError, NameError) as e:
     logger.error("Unexpected error:", str(e))
+    print str(e)
 
     response.statusCode = 500
-    response.entity = json.dumps({"result": "Error importing template [%s]" % str(e)})
+    response.entity = {"result": "Error importing template [%s]" % str(e)}
+except:
+    message = "Unexpected error: [%s]" % str(sys.exc_info())
+    logger.error(message)
+    print message
+
+    response.statusCode = 500
+    response.entity = {"result": "Error importing template [%s]" % message}
 
