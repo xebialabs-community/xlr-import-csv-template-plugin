@@ -9,42 +9,42 @@
 -->
 
 <form id="csv_form" onsubmit="return false;">
-	<title></title>
-	<fieldset> 
-		<legend>Upload a template from Excel / CSV (tab separated)</legend>
-		<label for="template_name">Template name to import to</label>
-		<input id="template_name" name="template_name" type="text"/> <br/>
-		
-		<label for="csv">Copy paste Excel sheet into this field</label>
-		<textarea id="csv" name="csv" type="text" style="width: 1024px; height: 150px;" /> <br/>
-		
-		<input type="submit"/> <br/> <br/>
+    <fieldset> 
+        <legend>Upload a template from Excel / CSV (tab separated)</legend>
 
-		<p id="csv_feedback"></p>
-	</fieldset>
+        <label for="template_name">Template name to import to</label>
+        <input id="template_name" name="template_name" type="text"/> <br/>
+        
+        <label for="csv">Copy paste Excel sheet into this field</label>
+        <textarea id="csv" name="csv" type="text" style="width: 1024px; height: 150px;" /> <br/>
+        
+        <input type="submit"/> <br/> <br/>
+
+        <p id="csv_feedback"></p>
+    </fieldset>
 <form>
 
 <script type="text/javascript">
 $( "#csv_form" ).submit(function( event ) {
-	formArray = $('#csv_form').serializeArray()
-	postData = JSON.stringify(formArray)
+    formArray = $('#csv_form').serializeArray()
+    postData = JSON.stringify(formArray)
 
-	$.ajax({
-		url: "/api/extension/csv/importer",
-		type: "POST",
-		data: postData,
-		contentType: "application/json; charset=utf-8",
-		dataType: "json",
-		success: function(data, textStatus, jqXHR){
-			result = data['entity']
-			url = "/#/templates/" + result['id'].replace("Applications/", "")
-			$("#csv_feedback").html(result['message'] + "<br/><a href=\"" + url + "\">go to template</a>")
-		},
-		error: function(jqXHR, textStatus, errorThrown){
-			$("#csv_feedback").html("Error: " + jqXHR.responseText)
-		}
-	})
+    $.ajax({
+        url: "/api/extension/csv/importer",
+        type: "POST",
+        data: postData,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data, textStatus, jqXHR){
+            result = data['entity']
+            url = "/#/templates/" + result['id'].replace("Applications/", "")
+            $("#csv_feedback").html(result['message'] + "<br/><a href=\"" + url + "\">go to template</a>")
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+            $("#csv_feedback").html("Error: " + jqXHR.responseText)
+        }
+    })
 
-	event.preventDefault();
+    event.preventDefault();
 });
 </script>

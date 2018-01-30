@@ -11,6 +11,6 @@
            xmlns="http://www.xebialabs.com/deployit/endpoints"
            xsi:schemaLocation="http://www.xebialabs.com/deployit/endpoints endpoints.xsd">
 
-    <endpoint path="/csv/importer" method="POST" script="csv/import.py"/>
+    <endpoint path="/csv/importer" method="POST" script="csv_import/import.py"/>
 
 </endpoints>
