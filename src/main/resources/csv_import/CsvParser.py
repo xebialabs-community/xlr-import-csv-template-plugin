@@ -9,32 +9,67 @@
 #
 
 import csv
+import csv_import
 
 class CsvParser:
     def __init__(self, csv_str):
         self.csv_str = csv_str
         self.field_to_column_index_mapping = {
-            'phase_name': 0,
-            'title': 1,
-            'description': 5,
-            'team': 6
+            'title_or_phase': 0,
+            'type': 1,
+            'team': 9
         }
+        self.delimiter = '\t'
+        self.dialect = 'excel'
+        self.quotechar = '"'
+        self.quoting = csv.QUOTE_MINIMAL
+        self.line_separator = '\n'
+        self.logger = csv_import.getLogger()
+
+    def is_phase_row(self, row):
+        task_type = row[self.field_to_column_index_mapping['type']]
+        if task_type:
+            return False
+        return True
     
     def parse(self):
         parsed_tasks = []
-        template_reader = csv.reader(self.csv_str.split('\n'), delimiter='\t', dialect='excel', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        template_reader = csv.reader(
+            self.csv_str.split(self.line_separator), 
+            delimiter=self.delimiter, 
+            dialect=self.dialect, 
+            quotechar=self.quotechar, 
+            quoting=self.quoting
+        )
 
+        phase_name = None
         for row in template_reader:
             if len(row) < max(self.field_to_column_index_mapping.values()):
-                logger.warn('Skipping row [%s] due to too little columns' % row)
+                self.logger.debug('Too little columns, skipping: row [%s]' % row)
                 continue
 
+            title_or_phase = row[self.field_to_column_index_mapping['title_or_phase']]
+            if not title_or_phase:
+                self.logger.debug('Empty title_or_phase, skipping: row [%s]' % row)
+                continue
+
+            if self.is_phase_row(row):
+                phase_name = title_or_phase
+                continue
+
+            if not phase_name:
+                message = "Expect a phase name by now - something wrong with the sheet"
+                self.logger.error(message)
+                raise Exception("Expect a phase name by now - something wrong with the sheet")
+
             task = {}
-            task['phase_name'] = row[self.field_to_column_index_mapping['phase_name']]
-            task['title'] = row[self.field_to_column_index_mapping['title']]
-            task['description'] = row[self.field_to_column_index_mapping['description']]
+            task['phase_name'] = phase_name
+            task['description'] = ''
+            task['title'] = title_or_phase
+            task['type'] = row[self.field_to_column_index_mapping['type']]
             task['team'] = row[self.field_to_column_index_mapping['team']]
             
             parsed_tasks.append(task)
 
         return parsed_tasks
+

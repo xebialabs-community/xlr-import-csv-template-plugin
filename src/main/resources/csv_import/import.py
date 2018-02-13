@@ -38,12 +38,12 @@ except (RuntimeError, TypeError, NameError) as e:
     print str(e)
 
     response.statusCode = 500
-    response.entity = {"result": "Error importing template [%s]" % str(e)}
+    response.entity = {"message": "Error importing template [%s]" % str(e)}
 except:
     message = "Unexpected error: [%s]" % str(sys.exc_info())
     logger.error(message)
     print message
 
     response.statusCode = 500
-    response.entity = {"result": "Error importing template [%s]" % message}
+    response.entity = {"message": "Error importing template [%s]" % message}
 

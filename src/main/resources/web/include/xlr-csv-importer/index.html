@@ -7,7 +7,6 @@
 
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
-
 <form id="csv_form" onsubmit="return false;">
     <fieldset> 
         <legend>Upload a template from Excel / CSV (tab separated)</legend>
@@ -41,7 +40,8 @@ $( "#csv_form" ).submit(function( event ) {
             $("#csv_feedback").html(result['message'] + "<br/><a href=\"" + url + "\">go to template</a>")
         },
         error: function(jqXHR, textStatus, errorThrown){
-            $("#csv_feedback").html("Error: " + jqXHR.responseText)
+            console.log(jqXHR.responseText)
+            $("#csv_feedback").html(JSON.parse(jqXHR.responseText)['entity']['message'])
         }
     })
 

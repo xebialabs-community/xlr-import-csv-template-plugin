@@ -7,7 +7,6 @@
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-import __builtin__
 from java.util import Date
 from sets import Set
 
@@ -30,13 +29,12 @@ class XlReleaseClient:
         return teamView
 
     def add_teams_to_template(self, template, tasks):
-        unique_teams = Set([task['team'] for task in tasks])
-        unique_teams.remove('')
-
         teams = []
         for team in template['teams']:
             teams.append(self.create_team(team['teamName'], team.id))
 
+        unique_teams = Set([task['team'] for task in tasks])
+        unique_teams.remove('')
         for team_name in unique_teams:
             teams.append(self.create_team(team_name))
 
