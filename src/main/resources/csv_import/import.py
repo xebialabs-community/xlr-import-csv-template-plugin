@@ -13,6 +13,10 @@ import json, sys
 from csv_import.CsvParser import CsvParser
 from csv_import.XlReleaseClient import XlReleaseClient
 
+import csv_import
+reload(csv_import.CsvParser)
+reload(csv_import.XlReleaseClient)
+
 
 for item in request.entity:
     if item['name'] == 'csv':
