@@ -13,6 +13,10 @@ This plugin will allow you to import simple, custom Excel spreadsheets into temp
 [xlr-csv-import-plugin-license-image]: https://img.shields.io/badge/License-MIT-yellow.svg
 [xlr-csv-import-plugin-license-url]: https://opensource.org/licenses/MIT
 
+## Installation requirements ##
+
+- XL Release 7.2.x
+- higher versions are currently unsupported due to an issue that is being resolved in 7.6 - will hopefully follow with a hotfix.
 
 ## Installation: ##
 
