@@ -1,17 +1,17 @@
-# xlr-csv-import-plugin
+# xlr-import-csv-template-plugin
 
 ## Introduction: ##
 This plugin will allow you to import simple, custom Excel spreadsheets into templates in XL Release.
 
 ## CI status ##
 
-[![Build Status][xlr-csv-import-plugin-travis-image] ][xlr-csv-import-plugin-travis-url]
-[![License: MIT][xlr-csv-import-plugin-license-image] ][xlr-csv-import-plugin-license-url]
+[![Build Status][xlr-import-csv-template-plugin-travis-image] ][xlr-import-csv-template-plugin-travis-url]
+[![License: MIT][xlr-import-csv-template-plugin-license-image] ][xlr-import-csv-template-plugin-license-url]
 
-[xlr-csv-import-plugin-travis-image]: https://travis-ci.org/xebialabs-community/xlr-csv-import-plugin.svg?branch=master
-[xlr-csv-import-plugin-travis-url]: https://travis-ci.org/xebialabs-community/xlr-csv-import-plugin
-[xlr-csv-import-plugin-license-image]: https://img.shields.io/badge/License-MIT-yellow.svg
-[xlr-csv-import-plugin-license-url]: https://opensource.org/licenses/MIT
+[xlr-import-csv-template-plugin-travis-image]: https://travis-ci.org/xebialabs-community/xlr-import-csv-template-plugin.svg?branch=master
+[xlr-import-csv-template-plugin-travis-url]: https://travis-ci.org/xebialabs-community/xlr-import-csv-template-plugin
+[xlr-import-csv-template-plugin-license-image]: https://img.shields.io/badge/License-MIT-yellow.svg
+[xlr-import-csv-template-plugin-license-url]: https://opensource.org/licenses/MIT
 
 ## Installation requirements ##
 
