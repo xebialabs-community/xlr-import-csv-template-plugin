@@ -9,10 +9,10 @@
 #
 
 def getLogger():
-    if "logger" not in globals().keys():
-        import logging
-        logger = logging.getLogger('csv_import.CsvParser')
-        logger.addHandler(logging.StreamHandler())
+    if "logger" in globals().keys():
         return logger
     else:
+        import logging
+        logger = logging.getLogger('csv_import')
+        logger.addHandler(logging.StreamHandler())
         return logger
