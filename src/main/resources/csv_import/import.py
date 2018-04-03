@@ -31,7 +31,6 @@ try:
         "id": template.id,
         "message": "Successfully imported template [%s]" % template_name
     }
-
 except (RuntimeError, TypeError, NameError) as e:
     logger.error("Unexpected error:", str(e))
     print str(e)
@@ -45,4 +44,3 @@ except:
 
     response.statusCode = 500
     response.entity = {"message": "Error importing template [%s]" % message}
-

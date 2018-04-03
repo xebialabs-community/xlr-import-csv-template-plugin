@@ -71,6 +71,7 @@ class XlReleaseClient:
         template.status = ReleaseStatus.TEMPLATE
         template.scheduledStartDate = Date()
         template.dueDate = Date(template.scheduledStartDate.getTime() + 3600000)
+
         template = self.templateApi.createTemplate(template)
 
         # Delete unnecessary "New Phase"
