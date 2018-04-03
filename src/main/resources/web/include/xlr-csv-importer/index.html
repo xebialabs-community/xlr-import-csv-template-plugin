@@ -25,6 +25,8 @@
 
 <script type="text/javascript">
 $( "#csv_form" ).submit(function( event ) {
+    $("#csv_feedback").html("")
+    
     formArray = $('#csv_form').serializeArray()
     postData = JSON.stringify(formArray)
 
