@@ -1,0 +1,12 @@
+language: java
+deploy:
+  provider: releases
+  api_key:
+    secure: YGmjLMx2BKnN3fuZrqPPxasgkNcOFhO5nfbnevFnZhJlKPdj3lnt1/G3Z1r3HCIHrEgt1hVZ3/ycomLByIeVNXcmmbnxCK0x4xK1s60Q0e+VY+RhIDNwRtwcD36EyDGKUv2Gyq78oPdC4v8y8BFDXjci7nrDhVY+trHnThyuB+8O0INqqLYPRhyfIVdGm8/3jQaviRlzFIvpqm7vYVD3tVisTezpOzSsnm1veWmZOCP2bdavtQ6HKWm9MbbdVmjp+FWYwYVfaQN6w4isJbnoUwk1Ctt2nHf6dbHbHgIRRPx2Xsh3le5irHHydjuyoYscsg4oqZoP1rN4eCokRrHpDib6btcmqChuhc7Vvur8jssZHichdN15iNJ4EOwTLPpA/h2e21XC7flLxG8/H0BIUawAW8WLLgDnWdfSmRVenHuufOGpfDvMz6lcbMFH4bNsYbsnesaFiI5fOT1YtaKbTrE3EluL6+Qg2drTWxNKDe5eTnF2TPLOb1NgC8YZUgCsxHwSpQvfjAxZVE3t5BMAyICVOYvOTdHnSW9U6GEM94qie8BfAQnmaVG5I86KgYfv6sB9le9mVWCoZMxLp8nPBzDnuX+iMaRvt8dFCZMi1QsfbMY9aZtyCIcugrcZfxYaLgnNfLJCMce7mKvEFi9dKPO+rCAkdyhrOPIv1mIYIUI=
+  file_glob: true
+  file: build/libs/*
+  skip_cleanup: true
+  on:
+    repo: xebialabs-community/xlr-import-csv-template-plugin
+    all_branches: true
+    tags: true
