@@ -15,8 +15,7 @@ This plugin will allow you to import simple, custom Excel spreadsheets into temp
 
 ## Installation requirements ##
 
-- Tested with XL Release 7.2.x, but should work with lower 7 versions too.
-- higher versions are currently unsupported due to an issue that is being resolved in 7.6 - will hopefully follow with a hotfix.
+- Tested with XL Release 7.2.x and 7.5.x, but should work with lower 7 versions too.
 
 ## Installation: ##
 
