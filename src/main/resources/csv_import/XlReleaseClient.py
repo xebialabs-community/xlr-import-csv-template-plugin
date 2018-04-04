@@ -69,6 +69,10 @@ class XlReleaseClient:
         template = Release()
         template.title = template_name
         template.status = ReleaseStatus.TEMPLATE
+        # workaround for http://xebialabs.zendesk.com/agent/tickets/11419 affecting XLR 7.5 & 7.6
+        template.setProperty("riskScore", "0")
+        template.setProperty("totalRiskScore", "0")
+        # end workaround
         template.scheduledStartDate = Date()
         template.dueDate = Date(template.scheduledStartDate.getTime() + 3600000)
 
