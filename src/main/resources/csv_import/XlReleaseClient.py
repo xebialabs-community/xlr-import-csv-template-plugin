@@ -53,10 +53,14 @@ class XlReleaseClient:
             title = task['title']
             description = task['description']
             team = task['team']
+            taskType = task['type']
             
             phase_id = self.add_phase_if_not_exists_and_return_id(template, phase_name)
 
-            task = self.taskApi.newTask()
+            if taskType.lower() == "gate":
+              task = self.taskApi.newTask("xlrelease.GateTask")
+            else:
+              task = self.taskApi.newTask()
             task.description = description
             task.title = title
 
