@@ -3,7 +3,7 @@ dist: trusty
 before_install:
 - curl -O http://central.maven.org/maven2/org/python/jython-installer/2.7.1b3/jython-installer-2.7.1b3.jar
 - java -jar jython-installer-2.7.1b3.jar -s -d /tmp/jython
-- /tmp/jython/bin/jython --version
+- "/tmp/jython/bin/jython --version"
 - mkdir -p ~/.gradle
 - echo jythonInterpreter=/tmp/jython/bin/jython >> ~/.gradle/gradle.properties
 deploy:
@@ -17,3 +17,6 @@ deploy:
     repo: xebialabs-community/xlr-import-csv-template-plugin
     all_branches: true
     tags: true
+notifications:
+  slack:
+    secure: vl+jco0TpJHiQGzZeFWXvXdKX0tc5C5+FkLLkKCzOflMLGP6AVN29hSXkB8nbf1aHSboxc0KRRxvBtjC5P47D1fXLx5vi05rbi5W5lSoKpqp7/o8hfA18mHu3knWRITFRQ1ocdVCBcGHQAQ90uJcJ4m8YClLdfaEqgsbaeFiACEgNidVQqBQLorMDumITCjmjqmO8+4se127L9YXEJK8M6qjSyYsvD8UCs9cg8FvK0zMddqEjvuOVaGXrQFMzawttKuLtMFk+s36mT9GKeZBKmZbynjB4omqwmFDGsUQKnV0CNGjQoxxpeN+qU3ZVs16gITi0qFslTb0X2w9d9omevLrf8NQaqBSWegEGB+7h69Qdd2VtMoZAEwzrGqys+Bx2PSMeHDHRD9KJMKltVGq/6187KpcAWH+Fv41RPJ9YsoFIleUHFBhuYYPQp3+nRzD3OvT7iBJQ/h7QokBqcFZjjYuSh09dWcXZ6XAlYwZbpoIIf8qOe2YfTdP3VPAXeRW3W1JVM8jv0jfeHyVSXSPV4WWfJyfWIhuQiI+zP7obcwZkHlfgHJNKV/YL0PpXcnRy2dluCRtHfZCU9r761x97cu+8xNmZbuo6P6dBBdlism+osFM8+wE51HmGnvccjFX5vhwCm1jJUL/YZsO0lkpdUUSh8LC1PWOYdLiultxRL0=
